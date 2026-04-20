@@ -108,7 +108,7 @@ src/
 
 ## 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/chatterly.git
+git clone https://github.com/IbrahimMahrez/Chatterly
 ```
 
 ## 2. Install dependencies
