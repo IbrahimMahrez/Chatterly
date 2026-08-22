@@ -16,8 +16,8 @@ router.get('/feed', verifyToken, getFeed);
 
 
 
-//get by id user profile
-router.get('/:id', verifyTokenAndAuthorization, getUserProfile);
+//get by id user profile (any authenticated user)
+router.get('/:id', verifyToken, getUserProfile);
 
 //get all users (admin only)
 router.get('/', verifyTokenAndAdmin, getAllUsers);

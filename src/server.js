@@ -32,7 +32,8 @@ app.use('/users', require('./routes/Users'));
 app.use('/posts', require('./routes/Posts'));
 app.use('/comments', require('./routes/Comments'));
 app.use('/password', require('./routes/Password'));
-app.use('/upload', require('./routes/Upload'));
+app.use('/upload', require('./routes/upload'));
+app.use('/notifications', require('./routes/Notifications'));
 
 // global error handler
 app.use((err, req, res, next) => {

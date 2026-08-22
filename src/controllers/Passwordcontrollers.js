@@ -104,5 +104,65 @@ module.exports.postResetPasswordView = asyncWrapper(async (req, res) => {
         }
 
 });
+
+module.exports.sendForgetPasswordLinkApi = asyncWrapper(async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return res.status(404).json({ message: 'User not found.' });
+  }
+
+  const secrt = process.env.JWT_SECRET + user.password;
+  const token = jwt.sign({ email: user.email, id: user._id }, secrt, { expiresIn: '15m' });
+
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const link = `${frontendUrl}/reset-password/${user._id}/${token}`;
+
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: user.email,
+    subject: 'Password Reset Link',
+    html: `<p>You requested a password reset. Click the link below to reset your password:</p><a href="${link}">Reset Password</a>`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.json({ message: 'Password reset link has been sent to your email.' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ message: 'Error sending email.' });
+  }
+});
+
+module.exports.postResetPasswordApi = asyncWrapper(async (req, res) => {
+  const user = await User.findById(req.params.userId);
+  if (!user) {
+    return res.status(404).json({ message: 'User not found.' });
+  }
+
+  const secrt = process.env.JWT_SECRET + user.password;
+
+  try {
+    jwt.verify(req.params.token, secrt);
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(req.body.password, salt);
+    await user.save();
+    res.json({ message: 'Password has been reset successfully.' });
+  } catch (error) {
+    return res.status(400).json({ message: 'Invalid or expired token.' });
+  }
+});
   
 

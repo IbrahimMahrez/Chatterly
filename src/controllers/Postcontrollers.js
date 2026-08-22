@@ -28,11 +28,13 @@ const getPostById = asyncWrapper(async (req, res) => {
 const createPost = asyncWrapper(async (req, res) => {
   const post = new Post({
     content: req.body.content,
-    author: req.user._id
+    author: req.user._id,
+    images: req.body.images || '',
   });
 
   const savedPost = await post.save();
-  res.status(201).json(savedPost);
+  const populated = await Post.findById(savedPost._id).populate('author', 'username');
+  res.status(201).json(populated);
 })
 
 //update a post
