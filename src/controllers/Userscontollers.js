@@ -1,11 +1,10 @@
-const express = require('express');
-const router = express.Router();
 const {User} = require('../models/User');
 const { validateUserUpdate} = require('../utils/validation');
 const bcrypt = require('bcrypt');
 const { Post } = require('../models/Posts');
 const asyncWrapper = require('../middlewares/catchAsync');
 const createNotification = require('../utils/createNotification');
+const { Message } = require('../models/Message');
 
 
 //get by id user profile
@@ -24,6 +23,37 @@ const getAllUsers = asyncWrapper(async (req, res) => {
     const skip=(page-1)*limit;
     const users = await User.find().select('-password').skip(skip).limit(limit);
     res.json(users);
+});
+
+const getDiscoverUsers = asyncWrapper(async (req, res) => {
+    const currentUser = await User.findById(req.user._id).select('following').lean();
+    const excludedIds = [req.user._id, ...(currentUser?.following || [])];
+    const users = await User.find({ _id: { $nin: excludedIds } })
+        .select('username profilePicture')
+        .limit(3)
+        .lean();
+    res.json(users);
+});
+
+const getConversations = asyncWrapper(async (req, res) => {
+    const userId = req.user._id.toString();
+    const roomIds = await Message.distinct('roomId', { roomId: { $regex: userId } });
+    const conversations = await Promise.all(roomIds.map(async (roomId) => {
+        const latest = await Message.findOne({ roomId }).sort({ createdAt: -1 }).lean();
+        const participantId = roomId.split('_').find((id) => id !== 'dm' && id !== userId);
+        const participant = participantId
+            ? await User.findById(participantId).select('username profilePicture').lean()
+            : null;
+        return participant && latest ? { ...participant, latestMessage: latest.message, updatedAt: latest.createdAt } : null;
+    }));
+    res.json(conversations.filter(Boolean).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)));
+});
+
+const getSavedPosts = asyncWrapper(async (req, res) => {
+    const posts = await Post.find({ savedBy: req.user._id })
+        .populate('author', 'username profilePicture')
+        .sort({ createdAt: -1 });
+    res.json(posts);
 });
 
 //update user profile
@@ -157,6 +187,9 @@ const getFeed = asyncWrapper(async (req, res) => {
 module.exports = {
     getUserProfile,
     getAllUsers,
+    getDiscoverUsers,
+    getConversations,
+    getSavedPosts,
     updateUserProfile,
     deleteUserProfile,
     followUser,

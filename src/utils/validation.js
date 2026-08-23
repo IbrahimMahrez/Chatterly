@@ -1,37 +1,30 @@
 
 const joi=require('joi');
-const bcrypt=require('bcrypt');
-const jwt=require('jsonwebtoken');
-const User=require('../models/User');
-
-
-
-
-//registration validation
+// Validate registration input.
 function validateUserRegistration(user){
     const schema=joi.object({
         username:joi.string().min(4).max(30).required(),
         email:joi.string().min(5).max(255).required().email(),
         password:joi.string().min(6).max(255).required(),
-        profilePicture:joi.string().uri().allow('')
+        profilePicture:joi.string().max(500).allow('')
     });
     return schema.validate(user);
 }
-//login validation
+// Validate login input.
 function validateUserLogin(user){
     const schema=joi.object({
-        email:joi.string().min(5).max(25).required().email(),
+        email:joi.string().min(5).max(205).required().email(),
         password:joi.string().min(6).max(255).required()
     });
     return schema.validate(user);
 }
-//update validation
+// Validate profile update input.
 function validateUserUpdate(user){
     const schema=joi.object({
         username:joi.string().min(4).max(30),
         email:joi.string().min(5).max(255).email(),
         password:joi.string().min(6).max(255),
-        profilePicture:joi.string().uri().allow('')
+        profilePicture:joi.string().max(500).allow('')
     });
     return schema.validate(user);
 }

@@ -20,9 +20,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
 
 // static files
+app.use('/images', express.static(path.join(__dirname, '../images')));
 app.use(express.static(path.join(__dirname, '../images')));
 app.set('view engine', 'ejs');
 
@@ -32,7 +35,11 @@ app.use('/users', require('./routes/Users'));
 app.use('/posts', require('./routes/Posts'));
 app.use('/comments', require('./routes/Comments'));
 app.use('/password', require('./routes/Password'));
-app.use('/upload', require('./routes/Upload'));
+app.use('/upload', require('./routes/upload'));
+app.use('/notifications', require('./routes/Notifications'));
+app.use('/stories', require('./routes/Stories'));
+app.use('/admin', require('./routes/Admin'));
+app.use('/ai', require('./routes/AI'));
 
 // global error handler
 app.use((err, req, res, next) => {

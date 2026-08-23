@@ -1,8 +1,5 @@
-const express = require('express');
-const router = express.Router();
 const {Post} = require('../models/Posts');
 const asyncWrapper = require('../middlewares/catchAsync');
-const {verifyToken}  = require('../middlewares/verifyToken');
 const createNotification = require('../utils/createNotification');
 
 
@@ -13,13 +10,13 @@ const getAllPosts =  asyncWrapper(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip=(page-1)*limit;
-    const posts = await Post.find().populate('author', 'username').skip(skip).limit(limit);
+    const posts = await Post.find().populate('author', 'username profilePicture').skip(skip).limit(limit);
     res.json(posts);
 });
 
 //get a post by id
 const getPostById = asyncWrapper(async (req, res) => {
-    const post = await Post.findById(req.params.id).populate('author', 'username');
+    const post = await Post.findById(req.params.id).populate('author', 'username profilePicture');
     if (!post) return res.status(404).json({ message: 'Post not found' });
     res.json(post);
 });
@@ -28,11 +25,13 @@ const getPostById = asyncWrapper(async (req, res) => {
 const createPost = asyncWrapper(async (req, res) => {
   const post = new Post({
     content: req.body.content,
-    author: req.user._id
+    author: req.user._id,
+    images: req.body.images || '',
   });
 
   const savedPost = await post.save();
-  res.status(201).json(savedPost);
+    const populated = await Post.findById(savedPost._id).populate('author', 'username profilePicture');
+  res.status(201).json(populated);
 })
 
 //update a post
@@ -107,11 +106,25 @@ const likeUnlikePost = asyncWrapper(async (req, res) => {
     });
 });
 
+const saveUnlikePost = asyncWrapper(async (req, res) => {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: 'Post not found' });
+
+    const userId = req.user._id.toString();
+    const isSaved = post.savedBy.some((id) => id.toString() === userId);
+    post.savedBy = isSaved
+        ? post.savedBy.filter((id) => id.toString() !== userId)
+        : [...post.savedBy, req.user._id];
+    await post.save();
+    res.json({ saved: !isSaved });
+});
+
 module.exports = {
     getAllPosts,
     getPostById,
     createPost,
     updatePost,
     deletePost,
-    likeUnlikePost
+    likeUnlikePost,
+    saveUnlikePost
 };

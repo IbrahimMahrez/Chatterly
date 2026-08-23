@@ -1,23 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const {User} = require('../models/User');
-const { validateUserUpdate} = require('../utils/validation');
-const { Post } = require('../models/Posts');
-const bcrypt = require('bcrypt');
-const asyncWrapper = require('../middlewares/catchAsync');
 const {verifyTokenAndAuthorization} = require('../middlewares/verifyToken');
 const {verifyTokenAndAdmin,verifyToken} = require('../middlewares/verifyToken');
-const { getUserProfile, getAllUsers, updateUserProfile, deleteUserProfile,followUser,getFeed } = require('../controllers/Userscontollers');
+const { getUserProfile, getAllUsers, getDiscoverUsers, getConversations, getSavedPosts, updateUserProfile, deleteUserProfile,followUser,getFeed } = require('../controllers/Userscontollers');
+const { getUserDashboard } = require('../controllers/Dashboardcontrollers');
 
 
 
 //feed route will be implemented in the future
 router.get('/feed', verifyToken, getFeed);
+router.get('/discover', verifyToken, getDiscoverUsers);
+router.get('/conversations', verifyToken, getConversations);
+router.get('/saved', verifyToken, getSavedPosts);
+router.get('/dashboard', verifyToken, getUserDashboard);
 
 
 
-//get by id user profile
-router.get('/:id', verifyTokenAndAuthorization, getUserProfile);
+//get by id user profile (any authenticated user)
+router.get('/:id', verifyToken, getUserProfile);
 
 //get all users (admin only)
 router.get('/', verifyTokenAndAdmin, getAllUsers);

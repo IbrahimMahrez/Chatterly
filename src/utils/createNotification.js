@@ -2,7 +2,7 @@ const { Notification } = require('../models/Notification');
 
 const createNotification = async ({ recipient, sender, type, post }) => {
 
-    // 🚨 مهم: متعملش notification لنفسك
+    // Do not create a notification for the user who triggered it.
     if (recipient.toString() === sender.toString()) return;
 
     await Notification.create({

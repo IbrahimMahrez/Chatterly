@@ -6,7 +6,7 @@ dotenv.config();
  async function  connectDB(){
 
  try {
-   await  mongoose.connect( process.env.MONGO_URI ) // connect to MongoDB database named bookstore promise-based connection
+  await mongoose.connect(process.env.MONGO_URI)
  console.log('Connected to MongoDB...')
  } catch (err) {
     console.error('could not connect to mongo db ',err)
