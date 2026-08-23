@@ -10,3 +10,5 @@ export const createPost = (data) => api.post('/posts', data);
 export const deletePost = (id) => api.delete(`/posts/${id}`);
 
 export const likePost = (id) => api.post(`/posts/${id}/like`);
+
+export const savePost = (id) => api.post(`/posts/${id}/save`);

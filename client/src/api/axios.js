@@ -7,7 +7,7 @@ const api = axios.create({
   },
 });
 
-// يضيف التوكن تلقائياً لكل طلب لو المستخدم مسجل دخول
+// Add the token to every request for authenticated users.
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {

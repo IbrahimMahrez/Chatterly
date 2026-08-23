@@ -8,14 +8,14 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true,
         minlength:4,
-        maxlength:30,
+        maxlength:300,
         unique:true
     },
     email:{ 
         type:String,
         required:true,
         minlength:5,
-        maxlength:255,
+        maxlength:2505,
         unique:true
     },
     password:{
@@ -26,7 +26,7 @@ const userSchema=new mongoose.Schema({
     },
    profilePicture: {
     type: String,
-    default: '../images/default_profile_picture.png'
+    default: ''
 },
     
     isAdmin:{

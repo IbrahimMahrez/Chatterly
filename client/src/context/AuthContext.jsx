@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
-  // عند فتح التطبيق: لو فيه token محفوظ، نحمل بيانات المستخدم
+  // Load the saved user's data when a token is available.
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser && token) {

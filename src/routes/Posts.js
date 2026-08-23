@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {Post} = require('../models/Posts');
-const asyncWrapper = require('../middlewares/catchAsync');
 const {verifyToken}  = require('../middlewares/verifyToken');
-const { getAllPosts, getPostById, createPost, updatePost, deletePost, likeUnlikePost} = require('../controllers/Postcontrollers');
+const { getAllPosts, getPostById, createPost, updatePost, deletePost, likeUnlikePost, saveUnlikePost} = require('../controllers/Postcontrollers');
 
 
 
@@ -20,6 +18,7 @@ router.put('/:id', verifyToken, updatePost);
 router.delete('/:id', verifyToken, deletePost);
 //like or unlike a post
 router.post('/:id/like', verifyToken, likeUnlikePost);
+router.post('/:id/save', verifyToken, saveUnlikePost);
 
 
 

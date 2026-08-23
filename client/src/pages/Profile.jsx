@@ -5,11 +5,15 @@ import PostCard from '../components/PostCard';
 import { useAuth } from '../context/AuthContext';
 import { getUserProfile, updateUserProfile, followUser } from '../api/users';
 import { getPosts } from '../api/posts';
+import { uploadImage } from '../api/upload';
+import { getImageUrl } from '../utils/images';
 import { getDmRoomId } from '../hooks/useSocket';
+import { useFeedback } from '../context/FeedbackContext';
 
 export default function Profile() {
   const { id } = useParams();
-  const { user: currentUser, updateUser } = useAuth();
+  const { user: currentUser, updateUser, logout } = useAuth();
+  const { showToast } = useFeedback();
 
   const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -21,12 +25,15 @@ export default function Profile() {
   const [form, setForm] = useState({ username: '', email: '' });
   const [saveError, setSaveError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   const isOwnProfile = currentUser?._id === id;
 
   const isFollowing = profile?.followers?.some(
     (fid) => fid.toString() === currentUser?._id?.toString()
   );
+
+  const profileImageUrl = getImageUrl(profile?.profilePicture);
 
   const fetchProfile = useCallback(async () => {
     setError('');
@@ -64,7 +71,7 @@ export default function Profile() {
       await followUser(id);
       await fetchProfile();
     } catch (err) {
-      alert(err.response?.data?.message || 'فشلت العملية');
+      showToast(err.response?.data?.message || 'تعذر إتمام العملية.', 'error');
     } finally {
       setFollowLoading(false);
     }
@@ -80,10 +87,31 @@ export default function Profile() {
       setProfile(data.user);
       updateUser(data.user);
       setEditing(false);
+      showToast('تم حفظ التعديلات.', 'success');
     } catch (err) {
       setSaveError(err.response?.data?.message || 'فشل تحديث البروفايل');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingPhoto(true);
+    setSaveError('');
+    try {
+      const { data: uploadData } = await uploadImage(file);
+      const { data } = await updateUserProfile(id, { profilePicture: uploadData.url });
+      setProfile(data.user);
+      updateUser(data.user);
+      showToast('تم تغيير صورة البروفايل.', 'success');
+    } catch (err) {
+      setSaveError(err.response?.data?.message || 'فشل رفع صورة البروفايل');
+    } finally {
+      setUploadingPhoto(false);
+      e.target.value = '';
     }
   };
 
@@ -110,7 +138,7 @@ export default function Profile() {
     return (
       <div className="feed-page">
         <Navbar />
-        <main className="feed-content">
+        <main className="profile-page-content">
           <div className="error-msg">{error || 'المستخدم غير موجود'}</div>
           <Link to="/feed">← رجوع للـ Feed</Link>
         </main>
@@ -122,17 +150,26 @@ export default function Profile() {
     <div className="feed-page">
       <Navbar />
 
-      <main className="feed-content">
+      <main className="profile-page-content">
         <Link to="/feed" className="back-link">← رجوع للـ Feed</Link>
 
         <div className="profile-header">
           <div className="profile-avatar">
-            {(profile.username || '?')[0].toUpperCase()}
+            {profileImageUrl ? (
+              <img
+                src={profileImageUrl}
+                alt={profile.username}
+                onError={(event) => { event.currentTarget.style.display = 'none'; }}
+              />
+            ) : (
+              (profile.username || '?')[0].toUpperCase()
+            )}
           </div>
 
           <div className="profile-info">
             <h2>{profile.username}</h2>
             <p className="profile-email">{profile.email}</p>
+            {saveError && <div className="error-msg">{saveError}</div>}
 
             <div className="profile-stats">
               <span><strong>{posts.length}</strong> منشور</span>
@@ -142,13 +179,20 @@ export default function Profile() {
 
             <div className="profile-actions">
               {isOwnProfile ? (
-                <button
-                  type="button"
-                  className="btn-primary btn-sm"
-                  onClick={() => setEditing(!editing)}
-                >
-                  {editing ? 'إلغاء' : '✏️ تعديل البروفايل'}
-                </button>
+                <>
+                  <label className="btn-secondary btn-sm">
+                    {uploadingPhoto ? 'جاري الرفع...' : '📷 تغيير الصورة'}
+                    <input type="file" accept="image/*" hidden onChange={handlePhotoChange} disabled={uploadingPhoto} />
+                  </label>
+                  <button
+                    type="button"
+                    className="btn-primary btn-sm"
+                    onClick={() => setEditing(!editing)}
+                  >
+                    {editing ? 'إلغاء' : '✏️ تعديل البروفايل'}
+                  </button>
+                  <button type="button" className="profile-logout" onClick={logout}>تسجيل الخروج</button>
+                </>
               ) : (
                 <>
                   <button
@@ -178,7 +222,6 @@ export default function Profile() {
         {editing && isOwnProfile && (
           <div className="edit-profile">
             <h4>تعديل البروفايل</h4>
-            {saveError && <div className="error-msg">{saveError}</div>}
             <form onSubmit={handleSave}>
               <div className="form-group">
                 <label htmlFor="username">اسم المستخدم</label>

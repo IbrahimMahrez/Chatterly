@@ -5,6 +5,7 @@ import {
   markAsRead,
   markAllAsRead,
 } from '../api/notifications';
+import { Bell } from 'lucide-react';
 
 const TYPE_LABELS = {
   like: 'أعجب بمنشورك',
@@ -86,7 +87,7 @@ export default function NotificationsBell() {
   return (
     <div className="notifications-wrap" ref={panelRef}>
       <button type="button" className="notif-btn" onClick={handleOpen}>
-        🔔
+        <Bell size={20} />
         {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
       </button>
 

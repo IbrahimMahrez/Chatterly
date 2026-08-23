@@ -10,7 +10,8 @@ const path=require('path');
       cb(null, path.join(__dirname, '../../images'));
     },
     filename: function (req, file, cb) {
-      cb(null, Date.now() + '-' + file.originalname); // specify the filename for the uploaded file
+      const extension = path.extname(file.originalname).toLowerCase();
+      cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${extension}`);
     }
   });
 

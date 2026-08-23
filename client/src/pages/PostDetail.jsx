@@ -5,9 +5,11 @@ import PostCard from '../components/PostCard';
 import { getPostById } from '../api/posts';
 import { getComments, createComment, deleteComment, likeComment } from '../api/comments';
 import { useAuth } from '../context/AuthContext';
+import { useFeedback } from '../context/FeedbackContext';
 
 function CommentItem({ comment, onDelete, onLike }) {
   const { user } = useAuth();
+  const { confirmAction, showToast } = useFeedback();
   const authorId = comment.author?._id || comment.author;
   const isOwner = authorId?.toString() === user?._id?.toString();
   const isLiked = comment.likes?.some((id) => id.toString() === user?._id?.toString());
@@ -80,18 +82,21 @@ export default function PostDetail() {
       ]);
       setContent('');
     } catch (err) {
-      alert(err.response?.data?.message || 'فشل إضافة التعليق');
+      showToast(err.response?.data?.message || 'تعذر إضافة التعليق.', 'error');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDeleteComment = async (commentId) => {
+    const confirmed = await confirmAction({ title: 'حذف التعليق', message: 'لن تستطيع استرجاع التعليق بعد حذفه.', confirmLabel: 'حذف التعليق' });
+    if (!confirmed) return;
     try {
       await deleteComment(commentId);
       setComments((prev) => prev.filter((c) => c._id !== commentId));
+      showToast('تم حذف التعليق.', 'success');
     } catch (err) {
-      alert(err.response?.data?.message || 'فشل حذف التعليق');
+      showToast(err.response?.data?.message || 'تعذر حذف التعليق.', 'error');
     }
   };
 

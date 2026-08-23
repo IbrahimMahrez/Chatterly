@@ -1,14 +1,22 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { createPost } from '../api/posts';
 import { uploadImage } from '../api/upload';
+import { Image } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { getImageUrl } from '../utils/images';
 
-export default function CreatePost({ onPostCreated }) {
+export default function CreatePost({ onPostCreated, initialContent = '' }) {
+  const { user } = useAuth();
   const [content, setContent] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (initialContent) setContent(initialContent);
+  }, [initialContent]);
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
@@ -55,6 +63,10 @@ export default function CreatePost({ onPostCreated }) {
       <h4>منشور جديد</h4>
       {error && <div className="error-msg">{error}</div>}
       <form onSubmit={handleSubmit}>
+        <div className="composer-heading">
+          {getImageUrl(user?.profilePicture) ? <img src={getImageUrl(user.profilePicture)} alt="" /> : <span>{(user?.username || 'I')[0]}</span>}
+          <strong>What's on your mind, {user?.username || 'Ibrahim'}? 👋</strong>
+        </div>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -74,7 +86,7 @@ export default function CreatePost({ onPostCreated }) {
 
         <div className="create-post-actions">
           <label className="btn-secondary btn-file">
-            📷 صورة
+            <Image size={17} /> Photo / Video
             <input
               ref={fileInputRef}
               type="file"

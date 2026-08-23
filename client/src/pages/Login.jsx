@@ -19,8 +19,15 @@ export default function Login() {
     setSubmitting(true);
 
     try {
-      await login(email, password);
-      navigate('/feed');
+      const data = await login(email, password);
+      navigate('/feed', {
+        state: {
+          welcomeMessage: data.user.isAdmin
+            ? `مرحبًا يا أدمن، ${data.user.username}`
+            : `مرحبًا بك، ${data.user.username}`,
+          isAdmin: data.user.isAdmin,
+        },
+      });
     } catch (err) {
       setError(err.response?.data?.message || 'حدث خطأ أثناء تسجيل الدخول');
     } finally {
