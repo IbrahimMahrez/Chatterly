@@ -1648,3 +1648,128 @@ img, video, canvas {
     gap: 8px;
   }
 }
+
+/* Phone-first finishing pass: 480px covers compact Android devices and older
+   iPhones, while keeping controls comfortably tappable. */
+@media (max-width: 480px) {
+  .standalone-content,
+  .dashboard-page {
+    width: 100%;
+    padding: 18px 10px calc(82px + env(safe-area-inset-bottom));
+  }
+
+  [dir="rtl"] .standalone-content,
+  [dir="rtl"] .dashboard-page {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .post-card,
+  .dashboard-section,
+  .pulse-picker,
+  .pulse-room,
+  .circle-create,
+  .circle-card,
+  .reminder-form,
+  .saved-message-card {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .post-header,
+  .post-actions,
+  .comment-form,
+  .reminder-card,
+  .circle-meta,
+  .pulse-room header {
+    gap: 8px;
+  }
+
+  .post-actions button,
+  .comment-form button,
+  .profile-actions > button,
+  .profile-actions > a {
+    min-height: 40px;
+  }
+
+  .post-image,
+  .post-media,
+  .story-viewer-content img,
+  .story-viewer-content video {
+    max-height: min(62dvh, 460px);
+    object-fit: contain;
+  }
+
+  .toast-stack {
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+
+  [dir="rtl"] .toast-stack {
+    right: 10px;
+    left: 10px;
+  }
+
+  .toast {
+    width: 100%;
+    padding: 11px;
+    font-size: 12px;
+  }
+
+  .confirm-overlay { padding: 12px; }
+  .confirm-dialog { width: 100%; max-height: calc(100dvh - 24px); overflow-y: auto; }
+  .notifications-panel, .notif-panel { max-width: calc(100vw - 20px); }
+
+  .pulse-room form input,
+  .circle-checkin input,
+  .chat-input-area input { min-width: 0; }
+}
+
+@media (max-width: 360px) {
+  .navbar-links .nav-link { padding-right: 10px; padding-left: 10px; }
+  .dashboard-stat { padding: 11px; }
+  .pulse-options, .pulse-options.topics { gap: 7px; }
+  .pulse-options button { min-height: 66px; padding: 7px; font-size: 11px; }
+  .pulse-privacy { grid-template-columns: 1fr; }
+  .circle-card h2 { font-size: 16px; }
+  .reminder-card { padding: 10px; }
+  .auth-page { padding: 10px; }
+  .auth-card { padding: 24px 16px; border-radius: 13px; }
+  .auth-card h1 { font-size: 1.65rem; }
+}
+
+/* RTL-specific layout overrides. The sidebar lives on the right in Arabic,
+   so its desktop offset must be replaced at tablet and phone widths too. */
+@media (min-width: 721px) and (max-width: 1100px) {
+  [dir="rtl"] .feed-shell {
+    padding-right: 108px;
+    padding-left: 24px;
+  }
+
+  [dir="rtl"] .dashboard-page,
+  [dir="rtl"] .standalone-content,
+  [dir="rtl"] .chat-page {
+    padding-right: 108px;
+    padding-left: 24px;
+  }
+}
+
+@media (max-width: 720px) {
+  [dir="rtl"] .feed-shell {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  [dir="rtl"] .dashboard-page,
+  [dir="rtl"] .standalone-content,
+  [dir="rtl"] .chat-page {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  [dir="rtl"] .chat-page {
+    padding-top: max(8px, env(safe-area-inset-top));
+    padding-bottom: calc(70px + env(safe-area-inset-bottom));
+  }
+}
