@@ -1756,6 +1756,19 @@ img, video, canvas {
 }
 
 @media (max-width: 720px) {
+  /* Keep the services navigation at the bottom on Arabic phones as well.
+     This overrides the desktop RTL sidebar positioning. */
+  [dir="rtl"] .navbar {
+    inset: auto 0 0 0;
+    flex-direction: row;
+    width: 100%;
+    height: 62px;
+    min-height: 62px;
+    border-top: 1px solid var(--border);
+    border-right: 0;
+    border-left: 0;
+  }
+
   [dir="rtl"] .feed-shell {
     padding-right: 10px;
     padding-left: 10px;
