@@ -1772,4 +1772,42 @@ img, video, canvas {
     padding-top: max(8px, env(safe-area-inset-top));
     padding-bottom: calc(70px + env(safe-area-inset-bottom));
   }
+
+  /* The notifications popup must sit above the horizontal mobile nav, not
+     inside its scrollable area. */
+  .navbar .nav-notification-row {
+    display: flex !important;
+    position: static;
+  }
+
+  .nav-notification-row .notifications-wrap {
+    position: static;
+  }
+
+  .nav-notification-row .notif-panel {
+    position: fixed;
+    z-index: 1000;
+    right: 12px;
+    bottom: calc(78px + env(safe-area-inset-bottom));
+    left: 12px;
+    width: auto;
+    max-height: min(62dvh, 430px);
+    overflow-y: auto;
+    pointer-events: auto;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, .48);
+  }
+
+  /* Leave a visible gap between the Pulse room and the phone's bottom bar. */
+  .pulse-page {
+    padding-bottom: calc(102px + env(safe-area-inset-bottom));
+  }
+
+  .pulse-room {
+    min-height: calc(100dvh - 180px);
+    margin-bottom: 18px;
+  }
+
+  .pulse-room form {
+    padding-bottom: 6px;
+  }
 }
