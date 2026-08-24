@@ -1,0 +1,40 @@
+name: Deploy to velixir
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Velixir CLI
+        run: |
+          curl -fsSL https://velixir.net/install.sh | sh
+
+      - name: Find Velixir CLI
+        run: |
+          find "$HOME" -type f -name "velixir" -perm -111 2>/dev/null || true
+          find /usr/local -type f -name "velixir" -perm -111 2>/dev/null || true
+
+      - name: Deploy
+        env:
+          VELIXIR_API_KEY: ${{ secrets.VELIXIR_API_KEY }}
+        run: |
+          VELIXIR=$(find "$HOME" -type f -name "velixir" -perm -111 2>/dev/null | head -n 1)
+          if [ -z "$VELIXIR" ]; then
+            VELIXIR=$(find /usr/local -type f -name "velixir" -perm -111 2>/dev/null | head -n 1)
+          fi
+
+          if [ -z "$VELIXIR" ]; then
+            echo "Velixir CLI was not found"
+            exit 1
+          fi
+
+          echo "Using: $VELIXIR"
+          "$VELIXIR" --version
+          "$VELIXIR" deploy --app 1b91d76c-cf89-4e8a-adc6-30a6d9a43782

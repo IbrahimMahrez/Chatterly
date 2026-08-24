@@ -1,6 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db');
+const connectDB = require('./src/config/db');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
@@ -55,7 +55,8 @@ const server = http.createServer(app);
 initSocket(server);
 
 // START SERVER ONCE
-server.listen(process.env.PORT, () => {
-  console.log(`Server running on http://localhost:${process.env.PORT}`);
-});
+const PORT = process.env.PORT || 5000;
 
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+});
