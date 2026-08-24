@@ -5,7 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 const http = require('http');
-const initSocket = require('./socket/socket');
+const initSocket = require('./src/Socket/Socket');
 
 // Load env
 dotenv.config();
