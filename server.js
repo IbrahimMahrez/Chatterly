@@ -25,21 +25,21 @@ app.use(helmet({
 }));
 
 // static files
-app.use('/images', express.static(path.join(__dirname, '../images')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.static(path.join(__dirname, '../images')));
 app.set('view engine', 'ejs');
 
 // Routes
-app.use('/auth', require('./routes/Auth'));
-app.use('/users', require('./routes/Users'));
-app.use('/posts', require('./routes/Posts'));
-app.use('/comments', require('./routes/Comments'));
-app.use('/password', require('./routes/Password'));
-app.use('/upload', require('./routes/upload'));
-app.use('/notifications', require('./routes/Notifications'));
-app.use('/stories', require('./routes/Stories'));
-app.use('/admin', require('./routes/Admin'));
-app.use('/ai', require('./routes/AI'));
+app.use('/auth', require('./src/routes/Auth'));
+app.use('/users', require('./src/routes/Users'));
+app.use('/posts', require('./src/routes/Posts'));
+app.use('/comments', require('./src/routes/Comments'));
+app.use('/password', require('./src/routes/Password'));
+app.use('/upload', require('./src/routes/upload'));
+app.use('/notifications', require('./src/routes/Notifications'));
+app.use('/stories', require('./src/routes/Stories'));
+app.use('/admin', require('./src/routes/Admin'));
+app.use('/ai', require('./src/routes/AI'));
 
 // global error handler
 app.use((err, req, res, next) => {
