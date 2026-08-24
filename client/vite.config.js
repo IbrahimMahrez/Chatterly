@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  // Reuse the favicon package created for Chatterly in both development and builds.
+  publicDir: '../favicon (1)',
   server: {
     port: 5173,
     proxy: {

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import PostCard from '../components/PostCard';
 import { getSavedPosts } from '../api/users';
+import LoadingScreen from '../components/LoadingScreen';
 
 export default function SavedPosts() {
   const [posts, setPosts] = useState([]);
@@ -26,7 +27,7 @@ export default function SavedPosts() {
       <Navbar />
       <main className="standalone-content">
         <h1>Saved Posts</h1>
-        {loading && <p className="status-text">Loading saved posts...</p>}
+        {loading && <LoadingScreen compact />}
         {!loading && posts.length === 0 && <p className="placeholder-text">You have no saved posts.</p>}
         <div className="posts-list">
           {posts.map((post) => <PostCard key={post._id} post={post} onUpdate={updatePost} onDelete={() => {}} />)}

@@ -13,8 +13,13 @@ const notificationSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['like', 'comment', 'follow'],
+        enum: ['like', 'comment', 'follow', 'reminder'],
         required: true
+    },
+    message: {
+        type: String,
+        trim: true,
+        maxlength: 500,
     },
     post: {
         type: mongoose.Schema.Types.ObjectId,

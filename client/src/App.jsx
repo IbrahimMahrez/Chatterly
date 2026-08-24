@@ -12,14 +12,20 @@ import Chat from './pages/Chat';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import SavedPosts from './pages/SavedPosts';
+import SavedMessages from './pages/SavedMessages';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import Welcome from './pages/Welcome';
+import LoadingScreen from './components/LoadingScreen';
+import Reminders from './pages/Reminders';
+import Pulse from './pages/Pulse';
+import Circles from './pages/Circles';
 
 function PublicOnlyRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
-  const { t } = useLanguage();
+  useLanguage();
 
-  if (loading) return <div className="loading">{t('loading')}</div>;
+  if (loading) return <LoadingScreen />;
   if (isAuthenticated) return <Navigate to="/feed" replace />;
 
   return children;
@@ -27,8 +33,8 @@ function PublicOnlyRoute({ children }) {
 
 function AdminRoute({ children }) {
   const { user, loading, isAuthenticated } = useAuth();
-  const { t } = useLanguage();
-  if (loading) return <div className="loading">{t('loading')}</div>;
+  useLanguage();
+  if (loading) return <LoadingScreen />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   if (!user?.isAdmin) return <Navigate to="/dashboard" replace />;
   return children;
@@ -41,7 +47,7 @@ export default function App() {
         <FeedbackProvider>
           <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/feed" replace />} />
+          <Route path="/" element={<Welcome />} />
 
           <Route
             path="/login"
@@ -116,6 +122,13 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/saved-messages"
+            element={<ProtectedRoute><SavedMessages /></ProtectedRoute>}
+          />
+          <Route path="/reminders" element={<ProtectedRoute><Reminders /></ProtectedRoute>} />
+          <Route path="/pulse" element={<ProtectedRoute><Pulse /></ProtectedRoute>} />
+          <Route path="/circles" element={<ProtectedRoute><Circles /></ProtectedRoute>} />
 
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

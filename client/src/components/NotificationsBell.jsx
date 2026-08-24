@@ -8,6 +8,7 @@ import {
 import { Bell } from 'lucide-react';
 
 const TYPE_LABELS = {
+  reminder: 'تذكير:',
   like: 'أعجب بمنشورك',
   comment: 'علّق على منشورك',
   follow: 'بدأ بمتابعتك',
@@ -23,7 +24,7 @@ function timeAgo(dateStr) {
   return new Date(dateStr).toLocaleDateString('ar-EG');
 }
 
-export default function NotificationsBell() {
+export default function NotificationsBell({ label }) {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -86,8 +87,9 @@ export default function NotificationsBell() {
 
   return (
     <div className="notifications-wrap" ref={panelRef}>
-      <button type="button" className="notif-btn" onClick={handleOpen}>
+      <button type="button" className="notif-btn" onClick={handleOpen} aria-expanded={open}>
         <Bell size={20} />
+        {label && <span className="notif-label">{label}</span>}
         {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
       </button>
 
@@ -102,7 +104,7 @@ export default function NotificationsBell() {
             )}
           </div>
 
-          {loading && <p className="notif-empty">جاري التحميل...</p>}
+          {loading && <div className="notif-loading" role="status" aria-label="Loading"><span /></div>}
 
           {!loading && notifications.length === 0 && (
             <p className="notif-empty">مفيش إشعارات</p>
@@ -119,7 +121,7 @@ export default function NotificationsBell() {
                   <Link to={`/users/${n.sender?._id}`} className="notif-sender">
                     {n.sender?.username || 'مستخدم'}
                   </Link>
-                  {' '}{TYPE_LABELS[n.type] || n.type}
+                  {' '}{TYPE_LABELS[n.type] || n.type}{n.message ? ` ${n.message}` : ''}
                 </p>
                 {n.post?.content && (
                   <span className="notif-post-preview">

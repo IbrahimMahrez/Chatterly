@@ -6,6 +6,7 @@ import { getPostById } from '../api/posts';
 import { getComments, createComment, deleteComment, likeComment } from '../api/comments';
 import { useAuth } from '../context/AuthContext';
 import { useFeedback } from '../context/FeedbackContext';
+import LoadingScreen from '../components/LoadingScreen';
 
 function CommentItem({ comment, onDelete, onLike }) {
   const { user } = useAuth();
@@ -122,12 +123,7 @@ export default function PostDetail() {
   };
 
   if (loading) {
-    return (
-      <div className="feed-page">
-        <Navbar />
-        <p className="status-text">جاري التحميل...</p>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (error || !post) {

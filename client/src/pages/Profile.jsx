@@ -9,6 +9,7 @@ import { uploadImage } from '../api/upload';
 import { getImageUrl } from '../utils/images';
 import { getDmRoomId } from '../hooks/useSocket';
 import { useFeedback } from '../context/FeedbackContext';
+import LoadingScreen from '../components/LoadingScreen';
 
 export default function Profile() {
   const { id } = useParams();
@@ -126,12 +127,7 @@ export default function Profile() {
   };
 
   if (loading) {
-    return (
-      <div className="feed-page">
-        <Navbar />
-        <p className="status-text">جاري التحميل...</p>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (error || !profile) {

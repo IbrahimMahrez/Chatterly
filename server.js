@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const path = require('path');
 const http = require('http');
 const initSocket = require('./src/Socket/Socket');
+const { startReminderScheduler } = require('./src/services/reminderScheduler');
 
 // Load env
 dotenv.config();
@@ -40,6 +41,10 @@ app.use('/notifications', require('./src/routes/Notifications'));
 app.use('/stories', require('./src/routes/Stories'));
 app.use('/admin', require('./src/routes/Admin'));
 app.use('/ai', require('./src/routes/AI'));
+app.use('/messages', require('./src/routes/Messages'));
+app.use('/reminders', require('./src/routes/Reminders'));
+app.use('/pulse', require('./src/routes/Pulse'));
+app.use('/circles', require('./src/routes/Circles'));
 
 // global error handler
 app.use((err, req, res, next) => {
@@ -53,6 +58,7 @@ const server = http.createServer(app);
 
 // INIT SOCKET
 initSocket(server);
+startReminderScheduler();
 
 // START SERVER ONCE
 server.listen(process.env.PORT, () => {

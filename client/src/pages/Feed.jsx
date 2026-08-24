@@ -9,6 +9,7 @@ import { Search } from 'lucide-react';
 import RightSidebar from '../components/RightSidebar';
 import Stories from '../components/Stories';
 import AIAssistant from '../components/AIAssistant';
+import LoadingScreen from '../components/LoadingScreen';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Feed() {
@@ -88,7 +89,7 @@ export default function Feed() {
           </div>
           {tab === 'all' && <CreatePost initialContent={suggestedPost} onPostCreated={fetchPosts} />}
           <Stories />
-          {loading && <p className="status-text">{t('loadingPosts')}</p>}
+          {loading && <LoadingScreen compact />}
           {error && <div className="error-msg">{error}</div>}
           {!loading && !error && posts.length === 0 && <p className="placeholder-text">{t('noPosts')}</p>}
           <div className="posts-list">{visiblePosts.map((post) => <PostCard key={post._id} post={post} onUpdate={handlePostUpdate} onDelete={handlePostDelete} />)}</div>

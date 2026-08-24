@@ -54,4 +54,50 @@ const suggestPost = asyncWrapper(async (req, res) => {
   res.json({ suggestion });
 });
 
-module.exports = { chat, suggestPost };
+const summarizeConversation = asyncWrapper(async (req, res) => {
+  const messages = Array.isArray(req.body.messages) ? req.body.messages : [];
+  if (!messages.length) return res.status(400).json({ message: 'There are no messages to summarize' });
+
+  const transcript = messages
+    .slice(-60)
+    .map((item) => `${String(item.senderName || 'User').slice(0, 80)}: ${String(item.message || '').slice(0, 1000)}`)
+    .filter((item) => !item.endsWith(': '))
+    .join('\n');
+  if (!transcript) return res.status(400).json({ message: 'There are no messages to summarize' });
+
+  const summary = await callAI([
+    { role: 'system', content: 'Summarize this chat clearly in the same language used in it. Use short sections: Summary, Key points, and Action items. If there are no action items, say so. Do not invent facts.' },
+    { role: 'user', content: transcript },
+  ]);
+  res.json({ summary });
+});
+
+const suggestReplies = asyncWrapper(async (req, res) => {
+  const messages = Array.isArray(req.body.messages) ? req.body.messages : [];
+  if (!messages.length) return res.status(400).json({ message: 'There are no messages to reply to' });
+
+  const transcript = messages
+    .slice(-20)
+    .map((item) => `${String(item.senderName || 'User').slice(0, 80)}: ${String(item.message || '').slice(0, 1000)}`)
+    .filter((item) => !item.endsWith(': '))
+    .join('\n');
+  if (!transcript) return res.status(400).json({ message: 'There are no messages to reply to' });
+
+  const result = await callAI([
+    { role: 'system', content: 'Suggest exactly 3 short, natural replies to the latest message in this chat. Use the same language as the chat. Make the replies distinct: friendly, concise, and thoughtful. Return valid JSON only in this exact shape: {"suggestions":["reply 1","reply 2","reply 3"]}. Do not add markdown or explanations.' },
+    { role: 'user', content: transcript },
+  ]);
+
+  let suggestions;
+  try {
+    suggestions = JSON.parse(result).suggestions;
+  } catch {
+    return res.status(502).json({ message: 'AI returned an invalid reply format. Please try again.' });
+  }
+  if (!Array.isArray(suggestions) || suggestions.length !== 3 || suggestions.some((item) => typeof item !== 'string' || !item.trim())) {
+    return res.status(502).json({ message: 'AI returned invalid reply suggestions. Please try again.' });
+  }
+  res.json({ suggestions: suggestions.map((item) => item.trim().slice(0, 500)) });
+});
+
+module.exports = { chat, suggestPost, summarizeConversation, suggestReplies };

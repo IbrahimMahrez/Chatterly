@@ -1,13 +1,11 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
+import LoadingScreen from './LoadingScreen';
 
 export default function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
-  const { t } = useLanguage();
-
   if (loading) {
-    return <div className="loading">{t('loading')}</div>;
+    return <LoadingScreen />;
   }
 
   if (!isAuthenticated) {

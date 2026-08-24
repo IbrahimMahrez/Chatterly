@@ -7,6 +7,7 @@ import { deleteUser } from '../api/users';
 import { deletePost } from '../api/posts';
 import { useAuth } from '../context/AuthContext';
 import { useFeedback } from '../context/FeedbackContext';
+import LoadingScreen from '../components/LoadingScreen';
 
 const statCards = [
   ['users', 'Users', Users], ['posts', 'Posts', FileText], ['comments', 'Comments', MessageCircle], ['messages', 'Messages', Activity], ['stories', 'Active stories', Images],
@@ -39,7 +40,7 @@ export default function AdminDashboard() {
       <main className="dashboard-page admin-dashboard">
         <header className="dashboard-heading"><div><span className="eyebrow">ADMIN CONTROL</span><h1>Admin Dashboard</h1><p>Monitor the real activity across Chatterly.</p></div><ShieldCheck size={30} /></header>
         {error && <div className="error-msg">{error}</div>}
-        {!data && !error && <p className="status-text">Loading admin data...</p>}
+        {!data && !error && <LoadingScreen compact />}
         {data && <>
           <section className="dashboard-stat-grid">{statCards.map(([key, label, Icon]) => <div className="dashboard-stat" key={key}><Icon size={19} /><strong>{data.stats[key]}</strong><span>{label}</span></div>)}</section>
           <div className="admin-grid">

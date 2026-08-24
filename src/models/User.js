@@ -33,6 +33,10 @@ const userSchema=new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    lastSeen: {
+        type: Date,
+        default: Date.now
+    },
     followers: [
   {
     type: mongoose.Schema.Types.ObjectId,
@@ -48,7 +52,13 @@ following: [
 });
     //generate auth token method
 userSchema.methods.generateAuthToken=function(){
-    const token=jwt.sign({_id:this._id,isAdmin:this.isAdmin},process.env.JWT_SECRET,{expiresIn:'1h'});
+    // Keep users signed in for a practical period. Set JWT_EXPIRES_IN in the
+    // server environment to override this value (for example: "7d" or "30d").
+    const token=jwt.sign(
+        {_id:this._id,isAdmin:this.isAdmin},
+        process.env.JWT_SECRET,
+        {expiresIn:process.env.JWT_EXPIRES_IN || '30d'}
+    );
     return token;
 }
 

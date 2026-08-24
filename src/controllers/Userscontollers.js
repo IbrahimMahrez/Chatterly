@@ -29,7 +29,7 @@ const getDiscoverUsers = asyncWrapper(async (req, res) => {
     const currentUser = await User.findById(req.user._id).select('following').lean();
     const excludedIds = [req.user._id, ...(currentUser?.following || [])];
     const users = await User.find({ _id: { $nin: excludedIds } })
-        .select('username profilePicture')
+        .select('username profilePicture lastSeen')
         .limit(3)
         .lean();
     res.json(users);
@@ -42,7 +42,7 @@ const getConversations = asyncWrapper(async (req, res) => {
         const latest = await Message.findOne({ roomId }).sort({ createdAt: -1 }).lean();
         const participantId = roomId.split('_').find((id) => id !== 'dm' && id !== userId);
         const participant = participantId
-            ? await User.findById(participantId).select('username profilePicture').lean()
+            ? await User.findById(participantId).select('username profilePicture lastSeen').lean()
             : null;
         return participant && latest ? { ...participant, latestMessage: latest.message, updatedAt: latest.createdAt } : null;
     }));
