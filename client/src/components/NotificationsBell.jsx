@@ -1,139 +1,79 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import {
-  getNotifications,
-  markAsRead,
-  markAllAsRead,
-} from '../api/notifications';
 import { Bell } from 'lucide-react';
+import { getNotifications, markAllAsRead, markAsRead } from '../api/notifications';
 
-const TYPE_LABELS = {
-  reminder: 'تذكير:',
-  like: 'أعجب بمنشورك',
-  comment: 'علّق على منشورك',
-  follow: 'بدأ بمتابعتك',
-};
+const TYPE_LABELS = { reminder: 'تذكير:', like: 'أعجب بمنشورك', comment: 'علّق على منشورك', follow: 'بدأ بمتابعتك' };
 
-function timeAgo(dateStr) {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'الآن';
-  if (mins < 60) return `من ${mins} د`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `من ${hours} س`;
-  return new Date(dateStr).toLocaleDateString('ar-EG');
+function timeAgo(value) {
+  const minutes = Math.floor((Date.now() - new Date(value).getTime()) / 60_000);
+  if (minutes < 1) return 'الآن';
+  if (minutes < 60) return `من ${minutes} د`;
+  if (minutes < 1440) return `من ${Math.floor(minutes / 60)} س`;
+  return new Date(value).toLocaleDateString('ar-EG');
 }
 
 export default function NotificationsBell({ label }) {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [mobile, setMobile] = useState(() => window.matchMedia('(max-width: 720px)').matches);
+  const triggerRef = useRef(null);
   const panelRef = useRef(null);
-
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = notifications.filter((item) => !item.isRead).length;
 
   const fetchNotifications = async () => {
     setLoading(true);
-    try {
-      const { data } = await getNotifications();
-      setNotifications(data);
-    } catch {
-      /* silent */
-    } finally {
-      setLoading(false);
-    }
+    try { const { data } = await getNotifications(); setNotifications(data); } catch { /* keep existing results */ } finally { setLoading(false); }
   };
 
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
+    const timer = window.setInterval(fetchNotifications, 30_000);
+    return () => window.clearInterval(timer);
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (panelRef.current && !panelRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    const media = window.matchMedia('(max-width: 720px)');
+    const update = () => setMobile(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
   }, []);
 
-  const handleOpen = () => {
-    setOpen(!open);
-    if (!open) fetchNotifications();
+  useEffect(() => {
+    const closeOutside = (event) => {
+      if (!triggerRef.current?.contains(event.target) && !panelRef.current?.contains(event.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', closeOutside);
+    return () => document.removeEventListener('mousedown', closeOutside);
+  }, []);
+
+  const markOneRead = async (id) => {
+    try { await markAsRead(id); setNotifications((items) => items.map((item) => item._id === id ? { ...item, isRead: true } : item)); } catch { /* no-op */ }
+  };
+  const markEverythingRead = async () => {
+    try { await markAllAsRead(); setNotifications((items) => items.map((item) => ({ ...item, isRead: true }))); } catch { /* no-op */ }
   };
 
-  const handleRead = async (id) => {
-    try {
-      await markAsRead(id);
-      setNotifications((prev) =>
-        prev.map((n) => (n._id === id ? { ...n, isRead: true } : n))
-      );
-    } catch {
-      /* silent */
-    }
-  };
+  const panel = open && <div className={`notif-panel${mobile ? ' notif-panel-mobile' : ''}`} ref={panelRef}>
+    <div className="notif-panel-header"><h4>الإشعارات</h4>{unreadCount > 0 && <button type="button" className="notif-read-all" onClick={markEverythingRead}>قراءة الكل</button>}</div>
+    {loading && <div className="notif-loading" role="status" aria-label="Loading"><span /></div>}
+    {!loading && notifications.length === 0 && <p className="notif-empty">مفيش إشعارات</p>}
+    <div className="notif-list">{notifications.map((notification) => <div key={notification._id} className={`notif-item ${notification.isRead ? '' : 'unread'}`} onClick={() => !notification.isRead && markOneRead(notification._id)}>
+      <p><Link to={`/users/${notification.sender?._id}`} className="notif-sender">{notification.sender?.username || 'مستخدم'}</Link>{' '}{TYPE_LABELS[notification.type] || notification.type}{notification.message ? ` ${notification.message}` : ''}</p>
+      {notification.post?.content && <span className="notif-post-preview">"{notification.post.content.slice(0, 50)}..."</span>}
+      <span className="notif-time">{timeAgo(notification.createdAt)}</span>
+    </div>)}</div>
+  </div>;
 
-  const handleReadAll = async () => {
-    try {
-      await markAllAsRead();
-      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-    } catch {
-      /* silent */
-    }
-  };
-
-  return (
-    <div className="notifications-wrap" ref={panelRef}>
-      <button type="button" className="notif-btn" onClick={handleOpen} aria-expanded={open}>
-        <Bell size={20} />
-        {label && <span className="notif-label">{label}</span>}
-        {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
-      </button>
-
-      {open && (
-        <div className="notif-panel">
-          <div className="notif-panel-header">
-            <h4>الإشعارات</h4>
-            {unreadCount > 0 && (
-              <button type="button" className="notif-read-all" onClick={handleReadAll}>
-                قراءة الكل
-              </button>
-            )}
-          </div>
-
-          {loading && <div className="notif-loading" role="status" aria-label="Loading"><span /></div>}
-
-          {!loading && notifications.length === 0 && (
-            <p className="notif-empty">مفيش إشعارات</p>
-          )}
-
-          <div className="notif-list">
-            {notifications.map((n) => (
-              <div
-                key={n._id}
-                className={`notif-item ${n.isRead ? '' : 'unread'}`}
-                onClick={() => !n.isRead && handleRead(n._id)}
-              >
-                <p>
-                  <Link to={`/users/${n.sender?._id}`} className="notif-sender">
-                    {n.sender?.username || 'مستخدم'}
-                  </Link>
-                  {' '}{TYPE_LABELS[n.type] || n.type}{n.message ? ` ${n.message}` : ''}
-                </p>
-                {n.post?.content && (
-                  <span className="notif-post-preview">
-                    "{n.post.content.slice(0, 50)}..."
-                  </span>
-                )}
-                <span className="notif-time">{timeAgo(n.createdAt)}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  return <div className="notifications-wrap" ref={triggerRef}>
+    <button type="button" className="notif-btn" onClick={() => { setOpen((value) => !value); if (!open) fetchNotifications(); }} aria-expanded={open} aria-label={label || 'Notifications'}>
+      <Bell size={20} />
+      {label && <span className="notif-label">{label}</span>}
+      {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
+    </button>
+    {!mobile && panel}
+    {mobile && panel && createPortal(panel, document.body)}
+  </div>;
 }

@@ -1769,7 +1769,7 @@ img, video, canvas {
   }
 
   [dir="rtl"] .chat-page {
-    padding-top: max(8px, env(safe-area-inset-top));
+    padding-top: max(58px, calc(env(safe-area-inset-top) + 46px));
     padding-bottom: calc(70px + env(safe-area-inset-bottom));
   }
 
@@ -1809,5 +1809,23 @@ img, video, canvas {
 
   .pulse-room form {
     padding-bottom: 6px;
+  }
+
+  /* Rendered through a portal, so this panel cannot be clipped by the
+     horizontally-scrollable mobile navigation. */
+  .notif-panel-mobile {
+    position: fixed;
+    z-index: 1000;
+    right: 12px;
+    bottom: calc(78px + env(safe-area-inset-bottom));
+    left: 12px;
+    width: auto;
+    max-height: min(62dvh, 430px);
+    overflow-y: auto;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, .48);
+  }
+
+  .chat-page {
+    padding-top: max(58px, calc(env(safe-area-inset-top) + 46px));
   }
 }
