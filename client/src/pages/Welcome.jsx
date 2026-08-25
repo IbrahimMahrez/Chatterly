@@ -2,7 +2,7 @@ import { ArrowLeft, LogIn } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import welcomeLogo from '../../../new logo.png';
+import welcomeLogo from '../utils/new logo.png';
 
 export default function Welcome() {
   const { isAuthenticated } = useAuth();
