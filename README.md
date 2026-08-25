@@ -1,257 +1,136 @@
-# 💬 Chatterly - Full Stack Social Media Backend + Real-Time Chat
+# Chatterly
 
-Chatterly is a **modern backend system** built using Node.js, Express, MongoDB, and Socket.IO.  
-It simulates a real social media platform with real-time chat, authentication, posts, comments, likes, follows, notifications, file uploads, and **payment processing**.
+A full-stack social platform built with React, Node.js, Express, MongoDB, and Socket.IO. Chatterly combines social posting, real-time communication, personal productivity, and small goal-driven communities in one responsive Arabic-friendly experience.
 
-This project is designed for learning and portfolio purposes and demonstrates **real-world backend architecture**.
+## Highlights
 
----
+- Responsive UI for desktop, tablet, and small mobile screens, including RTL/Arabic layouts.
+- Secure authentication with JWT, hashed passwords, and password-reset emails.
+- Posts, comments, likes, profiles, follow/unfollow, stories, and notifications.
+- Real-time room and direct messaging with Socket.IO, typing state, reactions, attachments, and voice messages.
+- Saved messages and full-text message search.
+- AI assistance for chat, post ideas, reply suggestions, and conversation summaries.
+- Personal reminders with completion tracking and scheduled in-app/email delivery.
+- **Daily Pulse:** short-lived private AI sessions or temporary group conversations matched by mood, topic, and privacy preference.
+- **Interest Circles:** small groups of 3–8 people that work toward a shared goal for a defined period, with daily check-ins and a members-only discussion room.
+- Admin dashboard and basic platform analytics.
 
-# 🚀 Features
+## Tech stack
 
-## 🔐 Authentication System
-- User registration & login
-- JWT authentication
-- Password hashing using bcrypt
-- Forgot / Reset password via email (Nodemailer)
+| Area | Technologies |
+| --- | --- |
+| Frontend | React 19, Vite, React Router, Axios, Lucide |
+| Backend | Node.js, Express, Socket.IO |
+| Database | MongoDB with Mongoose |
+| Security | JWT, bcrypt, Helmet, CORS |
+| Integrations | Nodemailer, Multer, Paymob, OpenAI-compatible AI API |
 
----
+## Project structure
 
-## 👤 User System
-- Get user profile
-- Update user profile
-- Delete user account
-- Upload profile picture
-- Follow / Unfollow system
-- User feed based on following
-
----
-
-## 📝 Posts System
-- Create posts
-- Get all posts (pagination supported)
-- Update posts
-- Delete posts
-- Like / Unlike posts
-
----
-
-## 💬 Comments System
-- Add comments to posts
-- Get comments per post
-- Delete comments
-- Like / Unlike comments
-
----
-
-## 🔔 Notifications System
-- Follow notifications
-- Like notifications
-
----
-
-## 📸 File Upload System
-- Image upload using Multer
-- Profile picture support
-- File storage system
-
----
-
-## 💳 Payment System (Paymob)
-- Create payment intentions via Paymob API
-- Unified Checkout experience
-- JWT-protected payment endpoint
-- Supports EGP currency
-- Test & Live mode support
-
----
-
-## ⚡ Real-Time Chat (Socket.IO)
-- Real-time messaging between users
-- Join chat rooms
-- Send & receive messages instantly
-- Room-based chat system
-
----
-
-# 🛠️ Tech Stack
-- Node.js
-- Express.js
-- MongoDB (Mongoose)
-- Socket.IO
-- JWT Authentication
-- bcrypt
-- Multer
-- Nodemailer
-- Paymob API
-- dotenv
-- helmet
-- cors
-
----
-
-# 📁 Project Structure
+```text
+client/                 React + Vite frontend
+  src/pages/            Application pages
+  src/components/       Shared UI components
+  src/api/              HTTP API clients
 src/
-│
-├── config/          # Database configuration
-├── controllers/     # Business logic
-├── middlewares/     # Auth, error handling
-├── models/          # MongoDB schemas
-├── routes/          # API routes
-├── socket/          # Socket.IO setup
-├── utils/           # Helper functions
-└── server.js        # Entry point
-
----
-
-# ⚙️ Installation
-
-## 1. Clone the repository
-```bash
-git clone https://github.com/IbrahimMahrez/Chatterly
+  controllers/          Request handlers
+  models/               Mongoose models
+  routes/               Express routes
+  Socket/               Socket.IO events
+  services/             Background schedulers
+server.js               Backend entry point
 ```
 
-## 2. Install dependencies
+## Getting started
+
+### 1. Install dependencies
+
 ```bash
+npm install
+cd client
 npm install
 ```
 
-## 3. Create .env file
-```env
-PORT=7000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_email_password
+### 2. Configure environment variables
 
-# Paymob
+Create a root `.env` file:
+
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_long_random_secret
+
+EMAIL_USER=your_email@example.com
+EMAIL_PASS=your_email_password_or_app_password
+
+# Optional AI features
+AI_API_KEY=your_api_key
+AI_API_URL=https://api.openai.com/v1/chat/completions
+AI_MODEL=gpt-4o-mini
+
+# Optional Paymob integration
 PAYMOB_SECRET_KEY=your_paymob_secret_key
 PAYMOB_PUBLIC_KEY=your_paymob_public_key
 PAYMOB_INTEGRATION_ID=your_integration_id
-REDIRECT_URL=https://your-domain.com/success
-WEBHOOK_URL=https://your-domain.com/webhook
+REDIRECT_URL=http://localhost:5173
+WEBHOOK_URL=https://your-domain.example/webhook
 ```
 
-## 4. Run the server
+Create `client/.env`:
+
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+### 3. Run the application
+
+In one terminal, start the backend:
+
 ```bash
 npm run dev
 ```
 
----
+In another terminal, start the frontend:
 
-# 📡 API Endpoints
-
-## 🔐 Auth
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /auth/register | Register new user |
-| POST | /auth/login | Login user |
-
-## 👤 Users
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /users/:id | Get user profile |
-| PUT | /users/:id | Update user profile |
-| DELETE | /users/:id | Delete user account |
-| POST | /users/follow/:id | Follow / Unfollow user |
-| GET | /users/feed | Get user feed |
-
-## 📝 Posts
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /posts | Get all posts |
-| POST | /posts | Create post |
-| PUT | /posts/:id | Update post |
-| DELETE | /posts/:id | Delete post |
-| POST | /posts/:id/like | Like / Unlike post |
-
-## 💬 Comments
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /posts/:postId/comments | Add comment |
-| GET | /posts/:postId/comments | Get comments |
-| DELETE | /comments/:id | Delete comment |
-
-## 💳 Payment
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /payment/intention | Create payment intention (JWT required) |
-
-**Request Body:**
-```json
-{
-  "amount": 100,
-  "first_name": "Ibrahim",
-  "last_name": "Mohamed",
-  "email": "user@gmail.com",
-  "phone_number": "01000000000"
-}
+```bash
+cd client
+npm run dev
 ```
 
-**Response:**
-```json
-{
-  "message": "Payment intention created successfully",
-  "payment_url": "https://accept.paymob.com/unifiedcheckout/?publicKey=...&clientSecret=...",
-  "data": { ... }
-}
-```
+Open the URL shown by Vite (usually `http://localhost:5173`).
 
-## 📸 Upload
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /upload | Upload image |
+## Main API routes
 
----
+All routes marked as protected require an `Authorization: Bearer <token>` header.
 
-# ⚡ Socket.IO Events
+| Area | Endpoint | Notes |
+| --- | --- | --- |
+| Auth | `/auth/register`, `/auth/login` | Authentication |
+| Posts | `/posts` | Posts, likes, and feed operations |
+| Users | `/users` | Profiles, follows, discovery |
+| Messages | `/messages/saved`, `/messages/search` | Saved messages and search |
+| Notifications | `/notifications` | Notification inbox |
+| Reminders | `/reminders` | Protected CRUD endpoints |
+| AI | `/ai/chat`, `/ai/suggest-post`, `/ai/summarize-conversation`, `/ai/suggest-replies` | Protected AI tools |
+| Daily Pulse | `/pulse/join`, `/pulse/:id` | Protected temporary pulse rooms |
+| Interest Circles | `/circles` | Create/list circles; join and daily check-in routes |
 
-**Connect to server**
-```js
-const socket = io("http://localhost:7000");
-```
+## Real-time events
 
-**Join room**
-```js
-socket.emit("join_room", roomId);
-```
+Common Socket.IO events include:
 
-**Send message**
-```js
-socket.emit("send_message", { roomId, sender, message });
-```
+- `register_user` — register a connected user for presence.
+- `join_room` / `send_message` / `receive_message` — standard chat rooms.
+- `join_pulse` / `send_pulse_message` / `pulse_message` — temporary Pulse rooms.
+- `typing_start` / `typing_stop` — typing indicators.
+- `toggle_reaction` / `message_reactions` — message reactions.
 
-**Receive message**
-```js
-socket.on("receive_message", (data) => {
-  console.log(data);
-});
-```
+Circle chat rooms use `circle_<circleId>` and are available only to active circle members.
 
----
+## Mobile experience
 
-# 🔥 Future Improvements
-- Group chats
-- Message persistence in MongoDB
-- Seen / delivered messages
-- Online users system
-- Typing indicator
-- React frontend (full UI)
-- Admin dashboard
-- Webhook payment verification
+The interface is optimized for RTL Arabic and responsive use. On phones, navigation stays at the bottom, notifications open in a compact popup above it, and chat/pulse views reserve safe spacing around mobile controls.
 
----
+## Author
 
-# 🧠 What I Learned from this Project
-- REST API design
-- Authentication & authorization
-- MongoDB schema design
-- Real-time communication with Socket.IO
-- File upload handling
-- Payment gateway integration (Paymob)
-- Backend architecture structuring
-
----
-
-# 👨‍💻 Author
-**Ibrahim Mohamed**
+Ibrahim Mohamed
