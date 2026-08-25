@@ -3,12 +3,15 @@ import { Bookmark, Trash2 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import { getSavedMessages, saveMessage } from '../api/messages';
 import LoadingScreen from '../components/LoadingScreen';
+import SavedTabs from '../components/SavedTabs';
+import { useLanguage } from '../context/LanguageContext';
 
 function formatDate(value) {
   return new Date(value).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' });
 }
 
 export default function SavedMessages() {
+  const { isArabic } = useLanguage();
   const [savedMessages, setSavedMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,7 +33,8 @@ export default function SavedMessages() {
   return <div className="feed-page">
     <Navbar />
     <main className="standalone-content">
-      <div className="saved-messages-heading"><div><h1>Saved Messages</h1><p>Keep important messages, links, and notes in one place.</p></div><Bookmark size={24} /></div>
+      <div className="saved-page-heading"><div><h1>{isArabic ? 'المحفوظات' : 'Saved items'}</h1><p>{isArabic ? 'احتفظ بالرسائل والروابط والملاحظات المهمة في مكان واحد.' : 'Keep important messages, links, and notes in one place.'}</p></div><Bookmark size={24} /></div>
+      <SavedTabs />
       {loading && <LoadingScreen compact />}
       {!loading && savedMessages.length === 0 && <p className="placeholder-text">You have no saved messages yet.</p>}
       <div className="saved-message-list">

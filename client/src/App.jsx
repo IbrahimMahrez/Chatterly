@@ -20,6 +20,8 @@ import LoadingScreen from './components/LoadingScreen';
 import Reminders from './pages/Reminders';
 import Pulse from './pages/Pulse';
 import Circles from './pages/Circles';
+import Notifications from './pages/Notifications';
+import About from './pages/About';
 
 function PublicOnlyRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
@@ -48,6 +50,7 @@ export default function App() {
           <BrowserRouter>
         <Routes>
           <Route path="/" element={<Welcome />} />
+          <Route path="/about" element={<About />} />
 
           <Route
             path="/login"
@@ -129,6 +132,7 @@ export default function App() {
           <Route path="/reminders" element={<ProtectedRoute><Reminders /></ProtectedRoute>} />
           <Route path="/pulse" element={<ProtectedRoute><Pulse /></ProtectedRoute>} />
           <Route path="/circles" element={<ProtectedRoute><Circles /></ProtectedRoute>} />
+          <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
 
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
