@@ -1324,7 +1324,7 @@ body {
 .feed-tabs button { padding: 7px 12px; color: var(--muted); background: none; border: 0; border-bottom: 2px solid transparent; cursor: pointer; font-size: 12px; }
 .feed-tabs button.active { color: #fff; border-color: var(--primary); }
 
-.create-post, .stories-panel, .post-card, .side-panel { background: rgba(16, 24, 39, .92); border: 1px solid rgba(255,255,255,.06); border-radius: 14px; box-shadow: 0 8px 30px rgba(0,0,0,.12); }
+.create-post, .stories-panel, .post-card, .side-panel { background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 8px 30px rgba(25,21,34,.08); }
 .create-post { padding: 16px; margin-bottom: 16px; }
 .create-post h4 { display: none; }
 .create-post textarea { min-height: 54px; padding: 12px 14px; background: var(--input); border-color: var(--border); border-radius: 10px; font-size: 13px; }
