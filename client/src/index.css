@@ -2217,3 +2217,34 @@ img, video, canvas {
 .about-values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }.about-value { padding: 22px; background: var(--card); border: 1px solid var(--border); border-radius: 19px; }.about-value > span { display: grid; place-items: center; width: 42px; height: 42px; color: var(--primary); background: var(--color-violet-50); border-radius: 13px; }.about-value:nth-child(2) > span { color: var(--color-firefly-600); background: var(--color-firefly-100); }.about-value:nth-child(3) > span { color: var(--color-ember-600); background: var(--color-ember-50); }.about-value h2 { margin: 16px 0 7px; color: var(--text); font-size: 16px; }.about-value p { margin: 0; color: var(--secondary); font-size: 13px; line-height: 1.7; }
 .about-signature { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 40px 0 2px; color: var(--secondary); font-size: 13px; }.about-signature svg { color: var(--color-ember-500); }.about-signature strong { position: relative; margin-inline-start: 4px; color: var(--primary); font-family: "Segoe Print", "Bradley Hand", cursive; font-size: clamp(23px, 4vw, 32px); font-weight: 700; line-height: 1; transform: rotate(-4deg); }.about-signature strong::after { position: absolute; right: -7px; bottom: -6px; left: -5px; height: 5px; content: ""; border-top: 2px solid currentColor; border-radius: 50%; transform: rotate(-2deg); }
 @media (max-width: 720px) { .about-page { padding: 25px 16px 92px; }.about-hero { margin: 54px auto 28px; }.about-hero h1 { font-size: clamp(37px, 12vw, 54px); }.about-hero p { font-size: 14px; }.about-idea { grid-template-columns: 1fr; gap: 14px; padding: 21px; border-radius: 19px; }.about-heart { width: 62px; height: 62px; font-size: 29px; border-radius: 18px; }.about-values { grid-template-columns: 1fr; }.about-value { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; padding: 18px; }.about-value > span { grid-row: span 2; }.about-value h2 { margin: 1px 0 5px; }.about-signature { flex-wrap: wrap; margin-top: 29px; } }
+
+/* Light mode: remove legacy dark surfaces and keep reading contrast high. */
+[data-theme="light"] .post-content { color: #4A306D; font-weight: 500; }
+[data-theme="light"] .feed-tabs button.active { color: var(--color-primary); }
+[data-theme="light"] .auth-card,
+[data-theme="light"] .notifications-panel,
+[data-theme="light"] .comment-item,
+[data-theme="light"] .profile-card,
+[data-theme="light"] .profile-header,
+[data-theme="light"] .edit-profile,
+[data-theme="light"] .chat-lobby,
+[data-theme="light"] .chat-box,
+[data-theme="light"] .chat-header,
+[data-theme="light"] .chat-compose,
+[data-theme="light"] .dashboard-stat,
+[data-theme="light"] .dashboard-section,
+[data-theme="light"] .toast,
+[data-theme="light"] .confirm-dialog,
+[data-theme="light"] .welcome-card,
+[data-theme="light"] .loading-screen-compact {
+  color: var(--text);
+  background: var(--card);
+  border-color: var(--border);
+}
+[data-theme="light"] .chat-msg.theirs { color: var(--secondary); background: var(--bg-elevated); }
+[data-theme="light"] .form-group input,
+[data-theme="light"] .create-post textarea,
+[data-theme="light"] .comment-form textarea,
+[data-theme="light"] .chat-input,
+[data-theme="light"] .edit-profile input,
+[data-theme="light"] .edit-profile textarea { color: var(--text); background: var(--input); border-color: var(--border); }
