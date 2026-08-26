@@ -1572,6 +1572,128 @@ html, body, #root {
   max-width: 100%;
 }
 
+/* Chatterly color system */
+:root,
+[data-theme="dark"] {
+  --bg-main: #121016;
+  --bg-surface: #191522;
+  --bg-elevated: #241D32;
+  --text-primary: #FFFFFF;
+  --text-secondary: #9D8FB8;
+  --color-primary: #E04B85;
+  --color-secondary: #5A3D7C;
+  --accent-pink: #FF5F9B;
+  --border-color: #2D2342;
+  --color-violet-50: var(--bg-elevated);
+  --color-violet-100: var(--border-color);
+  --color-violet-300: var(--accent-pink);
+  --color-violet-500: var(--color-primary);
+  --color-violet-600: var(--color-primary);
+  --color-violet-700: var(--color-primary);
+  --color-ember-50: var(--bg-elevated);
+  --color-ember-100: var(--border-color);
+  --color-ember-300: var(--accent-pink);
+  --color-ember-500: var(--color-primary);
+  --color-ember-600: var(--accent-pink);
+  --color-ember-700: var(--accent-pink);
+  --color-firefly-100: var(--bg-elevated);
+  --color-firefly-300: var(--accent-pink);
+  --color-firefly-500: var(--color-primary);
+  --color-firefly-600: var(--accent-pink);
+  --bg: var(--bg-main);
+  --sidebar: var(--bg-surface);
+  --content: var(--bg-main);
+  --card: var(--bg-surface);
+  --input: var(--bg-elevated);
+  --primary: var(--color-primary);
+  --primary-light: var(--accent-pink);
+  --blue: var(--color-secondary);
+  --cta: var(--color-primary);
+  --text: var(--text-primary);
+  --secondary: var(--text-secondary);
+  --muted: var(--text-secondary);
+  --border: var(--border-color);
+  --gradient: var(--color-primary);
+}
+
+[data-theme="light"] {
+  --bg-main: #F4F2F7;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #ECE7F2;
+  --text-primary: #191522;
+  --text-secondary: #6B5E83;
+  --color-primary: #D03B75;
+  --color-secondary: #4A306D;
+  --accent-pink: #D03B75;
+  --border-color: #E2DAED;
+  --color-violet-50: var(--bg-elevated);
+  --color-violet-100: var(--border-color);
+  --color-violet-300: var(--accent-pink);
+  --color-violet-500: var(--color-primary);
+  --color-violet-600: var(--color-primary);
+  --color-violet-700: var(--color-primary);
+  --color-ember-50: var(--bg-elevated);
+  --color-ember-100: var(--border-color);
+  --color-ember-300: var(--accent-pink);
+  --color-ember-500: var(--color-primary);
+  --color-ember-600: var(--accent-pink);
+  --color-ember-700: var(--accent-pink);
+  --color-firefly-100: var(--bg-elevated);
+  --color-firefly-300: var(--accent-pink);
+  --color-firefly-500: var(--color-primary);
+  --color-firefly-600: var(--accent-pink);
+  --bg: var(--bg-main);
+  --sidebar: var(--bg-surface);
+  --content: var(--bg-main);
+  --card: var(--bg-surface);
+  --input: var(--bg-elevated);
+  --primary: var(--color-primary);
+  --primary-light: var(--accent-pink);
+  --blue: var(--color-secondary);
+  --cta: var(--color-primary);
+  --text: var(--text-primary);
+  --secondary: var(--text-secondary);
+  --muted: var(--text-secondary);
+  --border: var(--border-color);
+  --gradient: var(--color-primary);
+}
+
+html { color-scheme: dark; }
+[data-theme="light"] { color-scheme: light; }
+
+body, .feed-page {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.navbar {
+  background: var(--sidebar);
+  border-right-color: var(--border);
+}
+[dir="rtl"] .navbar { border-left-color: var(--border); }
+.brand-wordmark { color: var(--primary); }
+.navbar-links .nav-link:hover,
+.navbar-links .nav-link.active { background: var(--primary); box-shadow: 0 0 25px color-mix(in srgb, var(--primary) 30%, transparent); }
+.sidebar-create { background: var(--primary); }
+.theme-toggle {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 10px;
+  padding: 9px 12px;
+  color: var(--secondary);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+.theme-toggle:hover { color: var(--text); border-color: var(--primary); background: var(--bg-elevated); }
+@media (max-width: 720px) { .theme-toggle, .language-toggle { display: none; } }
+
 body {
   overflow-x: clip;
 }

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { FeedbackProvider } from './context/FeedbackContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -44,9 +45,10 @@ function AdminRoute({ children }) {
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <FeedbackProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <FeedbackProvider>
           <BrowserRouter>
         <Routes>
           <Route path="/" element={<Welcome />} />
@@ -140,8 +142,9 @@ export default function App() {
           <Route path="*" element={<Navigate to="/feed" replace />} />
         </Routes>
           </BrowserRouter>
-        </FeedbackProvider>
-      </AuthProvider>
-    </LanguageProvider>
+          </FeedbackProvider>
+        </AuthProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 }

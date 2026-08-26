@@ -1,13 +1,15 @@
-import { BarChart3, Bell, Bookmark, Home, Menu, MessageCircle, UserRound, Plus, ShieldCheck, X, BellRing, HeartPulse, CircleDot, Info } from 'lucide-react';
+import { BarChart3, Bell, Bookmark, Home, Menu, MessageCircle, UserRound, Plus, ShieldCheck, X, BellRing, HeartPulse, CircleDot, Info, Moon, Sun } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getImageUrl } from '../utils/images';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Navbar() {
   const { user } = useAuth();
   const { t, toggleLanguage, isArabic } = useLanguage();
+  const { isDark, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const avatar = getImageUrl(user?.profilePicture);
 
@@ -30,6 +32,9 @@ export default function Navbar() {
         <Link to={`/users/${user?._id}`} className="nav-link"><UserRound size={20} /> {t('profile')}</Link>
       </nav>
       <Link to="/feed" className="sidebar-create"><Plus size={18} /> {t('createPost')}</Link>
+      <button type="button" className="theme-toggle" onClick={toggleTheme} title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
+        {isDark ? <Sun size={17} /> : <Moon size={17} />} {isDark ? 'Light mode' : 'Dark mode'}
+      </button>
       <button type="button" className="language-toggle" onClick={toggleLanguage}>{t('language')}</button>
       <div className="sidebar-bottom">
         <Link to={`/users/${user?._id}`} className="sidebar-user">
