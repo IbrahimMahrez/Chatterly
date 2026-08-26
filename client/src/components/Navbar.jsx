@@ -58,6 +58,10 @@ export default function Navbar() {
         <Link to="/about" onClick={() => setMobileMenuOpen(false)}><Info size={18} /> {isArabic ? 'عن Chatterly' : 'About Chatterly'}</Link>
         {user?.isAdmin && <Link to="/admin" onClick={() => setMobileMenuOpen(false)}><ShieldCheck size={18} /> {t('admin')}</Link>}
         <Link to={`/users/${user?._id}`} onClick={() => setMobileMenuOpen(false)}><UserRound size={18} /> {t('profile')}</Link>
+        <button type="button" className="mobile-menu-option" onClick={toggleTheme}>
+          {isDark ? <Sun size={18} /> : <Moon size={18} />} {isDark ? 'Light mode' : 'Dark mode'}
+        </button>
+        <button type="button" className="mobile-menu-option" onClick={toggleLanguage}>{t('language')}</button>
       </div>}
     </aside>
   );

@@ -142,8 +142,11 @@ export default function PostDetail() {
     <div className="feed-page">
       <Navbar />
 
-      <main className="feed-content">
-        <Link to="/feed" className="back-link">← رجوع للـ Feed</Link>
+      <main className="feed-content post-detail-content">
+        <div className="post-detail-toolbar">
+          <Link to="/feed" className="back-link">← رجوع للمنشورات</Link>
+          <span>المنشور والتعليقات</span>
+        </div>
 
         <PostCard
           post={post}
